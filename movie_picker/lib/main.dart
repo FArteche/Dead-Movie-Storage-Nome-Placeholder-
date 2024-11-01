@@ -28,7 +28,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
   @override
   void initState() {
     super.initState();
-    futureMovies = tmdbService.getPopularMovies();
+    futureMovies = tmdbService.getFilmesPopulares();
   }
 
   @override
