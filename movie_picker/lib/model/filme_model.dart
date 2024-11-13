@@ -1,13 +1,3 @@
-// To parse this JSON data, do
-//
-//     final filmeModel = filmeModelFromMap(jsonString);
-
-import 'dart:convert';
-
-FilmeModel filmeModelFromMap(String str) => FilmeModel.fromMap(json.decode(str));
-
-String filmeModelToMap(FilmeModel data) => json.encode(data.toMap());
-
 class FilmeModel {
     bool adult;
     String backdropPath;
@@ -41,8 +31,8 @@ class FilmeModel {
         required this.voteCount,
     });
 
-    factory FilmeModel.fromMap(Map<String, dynamic> json) => FilmeModel(
-        adult: json["adult"],
+    factory FilmeModel.fromJson(Map<String, dynamic> json) {
+        return FilmeModel(adult: json["adult"],
         backdropPath: json["backdrop_path"],
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
@@ -55,10 +45,10 @@ class FilmeModel {
         title: json["title"],
         video: json["video"],
         voteAverage: json["vote_average"]?.toDouble(),
-        voteCount: json["vote_count"],
-    );
+        voteCount: json["vote_count"],);
+    }
 
-    Map<String, dynamic> toMap() => {
+    Map<String, dynamic> toJson() => {
         "adult": adult,
         "backdrop_path": backdropPath,
         "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
