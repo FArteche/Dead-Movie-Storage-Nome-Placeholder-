@@ -118,6 +118,11 @@ class Genre {
         "id": id,
         "name": name,
       };
+
+  @override
+  String toString() {
+    return '$name';
+  }
 }
 
 class ProductionCompany {

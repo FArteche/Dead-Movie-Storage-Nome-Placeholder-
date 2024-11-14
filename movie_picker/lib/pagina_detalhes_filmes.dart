@@ -92,7 +92,7 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[700],
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.white),
                         boxShadow: [
                           BoxShadow(
@@ -143,12 +143,14 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                //TITULO
                                 Text(
                                   filmeDetalhe.originalTitle,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
                                   ),
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.clip,
                                 ),
                                 Text(
@@ -157,7 +159,95 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                                       color: Colors.white,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.clip,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                //GÊNERO
+                                Text(
+                                  'Gênero: ',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  filmeDetalhe.genres!.join(' - '),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.clip,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                //TEMPO DE DURAÇÃO
+                                Text(
+                                  'Tempo de duração: ',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  "${filmeDetalhe.runtime!} Minutos",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.clip,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                //BUDGET
+                                Text(
+                                  'Custo: ',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  "${filmeDetalhe.budget!.toDouble()} \$",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.clip,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                //LUCRO
+                                Text(
+                                  'Lucro: ',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  "${filmeDetalhe.revenue!} \$",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.clip,
+                                ),
+                                SizedBox(
+                                  height: 5,
                                 ),
                               ],
                             ),
@@ -210,6 +300,24 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                         textAlign: TextAlign.center,
                       ),
                     ),
+                    // ListView(
+                    //   scrollDirection: Axis
+                    //       .horizontal, // Definindo a rolagem para horizontal
+                    //   children: List.generate(10, (index) {
+                    //     return Container(
+                    //       width: 100, // Largura fixa para cada container
+                    //       margin: EdgeInsets.symmetric(
+                    //           horizontal: 8), // Espaçamento entre os containers
+                    //       color: Colors.blueAccent,
+                    //       child: Center(
+                    //         child: Text(
+                    //           'Item $index',
+                    //           style: TextStyle(color: Colors.white),
+                    //         ),
+                    //       ),
+                    //     );
+                    //   }),
+                    // ),
                   ],
                 ),
               ),
