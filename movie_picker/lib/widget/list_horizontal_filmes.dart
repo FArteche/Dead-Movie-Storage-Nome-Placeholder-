@@ -1,85 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:movie_picker/controller/filme_controller.dart';
+import 'package:movie_picker/model/filme_model.dart';
 import 'package:movie_picker/pagina_detalhes_filmes.dart';
 
-class Paginafilmes extends StatefulWidget {
-  const Paginafilmes({super.key});
+class listHorizontalFilmes extends StatefulWidget {
+  final List<FilmeModel> listFilmes;
+
+  const listHorizontalFilmes({
+    super.key,
+    required this.listFilmes,
+  });
 
   @override
-  State<Paginafilmes> createState() => _PaginafilmesState();
+  State<listHorizontalFilmes> createState() => _listHorizontalFilmesState();
 }
 
-class _PaginafilmesState extends State<Paginafilmes> {
-  final _controller = Filmecontroller();
-  final _scrollController = ScrollController();
+class _listHorizontalFilmesState extends State<listHorizontalFilmes> {
   int? _idFilmeSelecionado;
-  int ultimaPag = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    _initScrollListener();
-    _initalize();
-  }
-
-  _initScrollListener() {
-    _scrollController.addListener(() async {
-      if (_scrollController.offset >=
-          _scrollController.position.maxScrollExtent) {
-        if (_controller.pagina == ultimaPag) {
-          ultimaPag++;
-          await _controller.getProxPagina();
-          setState(() {});
-        }
-      }
-    });
-  }
-
-  _initalize() async {
-    _controller.pagina = 0;
-    ultimaPag = 1;
-    await _controller.getProxPagina();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'CINE ME',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          IconButton(
-            onPressed: _initalize,
-            icon: const Icon(Icons.refresh_sharp),
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(color: Colors.black),
-        child: _filmeGrid(),
-      ),
-    );
-  }
-
-  _filmeGrid() {
-    return GridView.builder(
-      controller: _scrollController,
+    return ListView.builder(
       padding: const EdgeInsets.all(8.0),
-      itemCount: _controller.resultadosTotais,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: 0.67),
+      scrollDirection: Axis.horizontal, 
+      itemCount: widget.listFilmes.length,
       itemBuilder: (context, index) {
-        if (index < _controller.listFilmes.length) {
-          final filme = _controller.listFilmes[index];
+        if (index < widget.listFilmes.length) {
+          final filme = widget.listFilmes[index];
           final bool isSelected = filme.id == _idFilmeSelecionado;
           final posterUrl =
-              'https://image.tmdb.org/t/p/w342${_controller.listFilmes[index].posterPath}';
+              'https://image.tmdb.org/t/p/w342${widget.listFilmes[index].posterPath}';
+
           return GestureDetector(
             onTap: () {
               setState(() {
@@ -93,13 +43,18 @@ class _PaginafilmesState extends State<Paginafilmes> {
               });
             },
             child: Hero(
-              tag: 'movie_${_controller.listFilmes[index].id}',
+              tag: 'movie_${widget.listFilmes[index].id}',
               child: Container(
+                width:
+                    120, 
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 4), 
                 decoration: BoxDecoration(
                   border: isSelected
                       ? Border.all(
                           color: const Color.fromARGB(136, 255, 255, 255),
-                          width: 1.0)
+                          width: 1.0,
+                        )
                       : Border.all(color: Colors.white, width: 1.0),
                   borderRadius: BorderRadius.circular(8),
                 ),

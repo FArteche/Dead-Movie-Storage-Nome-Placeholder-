@@ -1,3 +1,4 @@
+
 class FilmeDetalheModel {
   final bool adult;
   final String? backdropPath;
@@ -44,24 +45,24 @@ class FilmeDetalheModel {
   factory FilmeDetalheModel.fromJson(Map<String, dynamic> json) {
     return FilmeDetalheModel(
       adult: json["adult"] ?? false,
-      backdropPath: json["backdrop_path"],
+      backdropPath: json["backdrop_path"] ?? '',
       budget: json["budget"] ?? 0,
       genres: json["genres"] != null
           ? List<Genre>.from(json["genres"].map((x) => Genre.fromJson(x)))
-          : null,
+          : <Genre> [Genre(id: 0, name: 'Indisponível')],
       id: json["id"],
       originalLanguage: json["original_language"] ?? '',
       originalTitle: json["original_title"] ?? '',
-      overview: json["overview"],
+      overview: json["overview"] ?? 'Sinopse Indisponível',
       popularity: json["popularity"]?.toDouble() ?? 0.0,
-      posterPath: json["poster_path"],
+      posterPath: json["poster_path"] ?? '',
       releaseDate: json["release_date"] != null
           ? DateTime.tryParse(json["release_date"])
-          : null,
+          : DateTime.tryParse('01-01-0000'),
       revenue: json["revenue"] ?? 0,
-      runtime: json["runtime"],
-      status: json["status"],
-      tagline: json["tagline"],
+      runtime: json["runtime"] ?? 0,
+      status: json["status"] ?? '',
+      tagline: json["tagline"] ?? '',
       title: json["title"] ?? '',
       video: json["video"] ?? false,
       voteAverage: json["vote_average"]?.toDouble() ?? 0.0,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_picker/PaginaFilmes.dart';
+import 'package:movie_picker/pagina_filmes.dart';
 void main() {
   runApp(MyApp());
 }
