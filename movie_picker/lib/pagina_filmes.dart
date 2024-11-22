@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_picker/controller/filme_controller.dart';
 import 'package:movie_picker/pagina_detalhes_filmes.dart';
+import 'package:movie_picker/pagina_lista_filmes_assistir.dart';
 import 'package:movie_picker/widget/list_horizontal_filmes.dart';
 
 class Paginafilmes extends StatefulWidget {
@@ -16,6 +18,7 @@ class _PaginafilmesState extends State<Paginafilmes> {
   final _scrollController = ScrollController();
   int? _idFilmeSelecionado;
   int ultimaPag = 1;
+  bool isloading = true;
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _PaginafilmesState extends State<Paginafilmes> {
   }
 
   _initalize() async {
+    isloading = true;
     await _controller.getFilmesPopulares();
     print("ok");
     await _controller.getFilmesAcao();
@@ -36,6 +40,7 @@ class _PaginafilmesState extends State<Paginafilmes> {
     print("ok");
     await _controller.getFilmesTerror();
     print("ok");
+    isloading = false;
     setState(() {});
   }
 
@@ -43,10 +48,12 @@ class _PaginafilmesState extends State<Paginafilmes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'CINE ME',
-          textAlign: TextAlign.center,
-        ),
+        backgroundColor: Colors.black,
+        title: Center(
+            child: Image.asset(
+          'assets/logo_mini.png',
+          width: 300,
+        )),
         actions: [
           IconButton(
             onPressed: _initalize,
@@ -54,151 +61,265 @@ class _PaginafilmesState extends State<Paginafilmes> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
+      drawer: Drawer(
+        backgroundColor: Color(Colors.grey.value),
+        width: 250,
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.black),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Filmes Populares",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesPopulares)),
-                  ],
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.black87,
+              ),
+              child: Center(
+                child: Text(
+                  "Menu",
+                  style: GoogleFonts.bebasNeue(
+                    textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.blueGrey),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Filmes de Ação",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesAcao)),
-                  ],
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: Text(
+                'Início',
+                style: GoogleFonts.bebasNeue(
+                  textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.black),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Animações",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesAnimacao)),
-                  ],
+            ListTile(
+              leading: const Icon(Icons.search_outlined),
+              title: Text(
+                'Pesquisar',
+                style: GoogleFonts.bebasNeue(
+                  textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
+              onTap: () {
+                Navigator.pop(context);
+              },
             ),
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.blueGrey),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Filmes de Aventura",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesAventura)),
-                  ],
+            ListTile(
+              leading: const Icon(Icons.list),
+              title: Text(
+                'Lista',
+                style: GoogleFonts.bebasNeue(
+                  textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  (MaterialPageRoute(
+                      builder: (context) => const PaginaListaFilmesAssistir())),
+                );
+              },
             ),
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.black),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Romances",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesRomance)),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 250,
-              decoration: const BoxDecoration(color: Colors.blueGrey),
-              child: Container(
-                child: Column(
-                  children: [
-                    Center(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(1,10,1,1),
-                          child: Text(
-                                        "Filmes de Terror",
-                                        style: GoogleFonts.bebasNeue(
-                          textStyle: const TextStyle(color: Colors.black, fontSize: 30,fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                        )),
-                    Expanded(
-                        child:
-                            listHorizontalFilmes(listFilmes: _controller.listFilmesTerror)),
-                  ],
-                ),
-              ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sair'),
+              onTap: () {
+                SystemNavigator.pop();
+              },
             ),
           ],
         ),
       ),
+      body: isloading
+          ? Center(
+              child: Container(
+                color: Colors.black,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/logo.png'),
+                    const CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.black),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Filmes Populares",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesPopulares)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.blueGrey),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Filmes de Ação",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesAcao)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.black),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Animações",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesAnimacao)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.blueGrey),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Filmes de Aventura",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesAventura)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.black),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Romances",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesRomance)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 250,
+                    decoration: const BoxDecoration(color: Colors.blueGrey),
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 10, 1, 1),
+                            child: Text(
+                              "Filmes de Terror",
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )),
+                          Expanded(
+                              child: listHorizontalFilmes(
+                                  listFilmes: _controller.listFilmesTerror)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 

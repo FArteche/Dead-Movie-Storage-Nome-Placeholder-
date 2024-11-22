@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_picker/controller/filme_detalhes_controller.dart';
+import 'package:movie_picker/db/filme_lista_assistirDAO.dart';
+import 'package:movie_picker/model/filme_lista_assistir_model.dart';
 import 'package:movie_picker/widget/chip_date.dart';
 import 'package:movie_picker/widget/list_horizontal_atores.dart';
 import 'package:movie_picker/widget/rate.dart';
@@ -20,6 +22,19 @@ class TelaDetalhesFilme extends StatefulWidget {
 }
 
 class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
+  bool isAssistido = false;
+
+  Future<void> _isAssistidoInit() async {
+    var aux = await FilmeListaAssistirDAO().isFilmeExistente(widget.filmeId);
+    isAssistido = aux;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isAssistidoInit();
+  }
+
   Future<FilmeDetalhesController> _inicializar(int filmeId) async {
     try {
       final controller = FilmeDetalhesController(filmeId: filmeId);
@@ -36,23 +51,31 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.filmeTitulo),
-        actions: const [
-          //TODO ADICIONAR FUNCIONALIDADE NO BOTÃO DE ADICIONAR A LISTA
-          IconButton(onPressed: null, icon: Icon(Icons.add))
-        ],
+        backgroundColor: Colors.grey,
+        title: Text(
+          widget.filmeTitulo,
+          style: TextStyle(
+            color: Color(Colors.white.value),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<FilmeDetalhesController>(
           future: _inicializar(widget.filmeId),
           builder: (BuildContext context,
               AsyncSnapshot<FilmeDetalhesController> snapshot) {
-            //Carregando Informações
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [CircularProgressIndicator()],
+                ),
+              );
             }
             // Erro
-            if (snapshot.hasError) {
+            else if (snapshot.hasError) {
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -131,6 +154,8 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                                     date: filme.fdm!.releaseDate ??
                                         DateTime(0, 0, 0),
                                   ),
+                                  //Adicionar à lista de filmes
+                                  botaoAddRm(filme)
                                 ],
                               ),
                             ),
@@ -319,7 +344,9 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: 200, child: listHorizontalCast(listCast: filme.cast)),
+                      SizedBox(
+                          height: 200,
+                          child: listHorizontalCast(listCast: filme.cast)),
                     ],
                   ),
                 ),
@@ -330,6 +357,86 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
           },
         ),
       ),
+    );
+  }
+
+  adicionarFilmeLista(FilmeListaAssistirModel filme) async {
+    try {
+      await FilmeListaAssistirDAO().insertFilme(filme);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text("Filme '${filme.nomeFilme}' adicionado com sucesso!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao adicionar filme: $e")),
+      );
+    }
+  }
+
+  removerFilmeLista(FilmeListaAssistirModel filme) async {
+    try {
+      await FilmeListaAssistirDAO().deleteFilme(filme.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("'${filme.nomeFilme}' removido da lista")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao remover filme: $e")),
+      );
+    }
+  }
+
+  botaoAddRm(FilmeDetalhesController filme) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+          width: 160,
+          height: 40,
+          child: isAssistido
+              ? FloatingActionButton(
+                  onPressed: () {
+                    removerFilmeLista(
+                      FilmeListaAssistirModel(
+                          id: filme.fdm!.id,
+                          nomeFilme: filme.fdm!.title,
+                          posterPath:
+                              'https://image.tmdb.org/t/p/w342${filme.fdm!.posterPath}',
+                          isAssistido: 0),
+                    );
+                    setState(() {
+                      isAssistido = false;
+                    });
+                  },
+                  backgroundColor: Color(Colors.black.value),
+                  foregroundColor: Color(Colors.white.value),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Icon(Icons.add), Text('Remover da lista')],
+                  ),
+                )
+              : FloatingActionButton(
+                  onPressed: () {
+                    adicionarFilmeLista(
+                      FilmeListaAssistirModel(
+                          id: filme.fdm!.id,
+                          nomeFilme: filme.fdm!.title,
+                          posterPath:
+                              'https://image.tmdb.org/t/p/w342${filme.fdm!.posterPath}',
+                          isAssistido: 0),
+                    );
+                    setState(() {
+                      isAssistido = true;
+                    });
+                  },
+                  foregroundColor: Color(Colors.black.value),
+                  backgroundColor: Color(Colors.white.value),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Icon(Icons.add), Text('Adicionar à lista')],
+                  ),
+                )),
     );
   }
 }

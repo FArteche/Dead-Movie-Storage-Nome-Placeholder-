@@ -72,7 +72,6 @@ class TMDBService {
 
     if (response.statusCode == 200) {
       final dados = json.decode(response.body);
-      print(dados.toString());
       return FilmeDetalheModel.fromJson(dados);
     } else {
       throw Exception('Falha ao carregar detalhes do filme');
