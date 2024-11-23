@@ -4,6 +4,7 @@ class FilmeListaAssistirModel {
   String posterPath;
   int isAssistido;
   bool? isAssistidoBool;
+  
   FilmeListaAssistirModel({
     required this.id,
     required this.nomeFilme,

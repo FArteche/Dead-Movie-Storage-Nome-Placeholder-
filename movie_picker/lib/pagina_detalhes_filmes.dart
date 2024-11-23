@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_picker/controller/filme_detalhes_controller.dart';
 import 'package:movie_picker/db/filme_lista_assistirDAO.dart';
@@ -51,7 +52,8 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Colors.black,
         title: Text(
           widget.filmeTitulo,
           style: TextStyle(
@@ -112,7 +114,7 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[700],
+                          color: Colors.black54,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.white),
                           boxShadow: [
@@ -280,17 +282,18 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Center(
+                      Center(
                         child: Text(
                           'Sinopse',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 30,
+                          style: GoogleFonts.bebasNeue(
+                            textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 50,
+                                fontWeight: FontWeight.bold),
                             shadows: [
-                              Shadow(
-                                offset:
-                                    Offset(2.0, 2.0), // Deslocamento da sombra
+                              const Shadow(
+                                offset: const Offset(
+                                    2.0, 2.0), // Deslocamento da sombra
                                 blurRadius: 4.0, // Nível de desfoque
                                 color: Colors.black, // Cor da sombra
                               ),
@@ -325,15 +328,16 @@ class _TelaDetalhesFilmeState extends State<TelaDetalhesFilme> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const Center(
+                      Center(
                         child: Text(
                           'Elenco',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 30,
+                          style: GoogleFonts.bebasNeue(
+                            textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 50,
+                                fontWeight: FontWeight.bold),
                             shadows: [
-                              Shadow(
+                              const Shadow(
                                 offset:
                                     Offset(2.0, 2.0), // Deslocamento da sombra
                                 blurRadius: 4.0, // Nível de desfoque

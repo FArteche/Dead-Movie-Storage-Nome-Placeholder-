@@ -11,6 +11,7 @@ class Filmecontroller {
   List<FilmeModel> listFilmesAventura = [];
   List<FilmeModel> listFilmesTerror = [];
   List<FilmeModel> listFilmesAnimacao = [];
+  List<FilmeModel> listPequisa = [];
   int pagina = 0;
   int resultadosTotais = 0;
 
@@ -22,6 +23,13 @@ class Filmecontroller {
   Future<void> getFilmesAcao() async {
     var aux = await _tmdbService.getFilmesPorGenero(28, _gerarNumeroAleatorio(1, 3));
     listFilmesAcao = aux;
+  }
+
+  Future<void> getPesquisa(String pesquisa) async {
+    var aux = await _tmdbService.getFilmesPesquisa(pesquisa, 1);
+    listPequisa = aux;
+    aux = await _tmdbService.getFilmesPesquisa(pesquisa, 2);
+    listPequisa += aux;
   }
 
   Future<void> getFilmesTerror() async {

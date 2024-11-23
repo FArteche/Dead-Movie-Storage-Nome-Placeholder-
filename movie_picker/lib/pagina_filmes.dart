@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_picker/controller/filme_controller.dart';
 import 'package:movie_picker/pagina_detalhes_filmes.dart';
 import 'package:movie_picker/pagina_lista_filmes_assistir.dart';
+import 'package:movie_picker/pagina_pesquisa.dart';
 import 'package:movie_picker/widget/list_horizontal_filmes.dart';
 
 class Paginafilmes extends StatefulWidget {
@@ -15,9 +16,6 @@ class Paginafilmes extends StatefulWidget {
 
 class _PaginafilmesState extends State<Paginafilmes> {
   final _controller = Filmecontroller();
-  final _scrollController = ScrollController();
-  int? _idFilmeSelecionado;
-  int ultimaPag = 1;
   bool isloading = true;
 
   @override
@@ -48,6 +46,7 @@ class _PaginafilmesState extends State<Paginafilmes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.black,
         title: Center(
             child: Image.asset(
@@ -62,7 +61,7 @@ class _PaginafilmesState extends State<Paginafilmes> {
         ],
       ),
       drawer: Drawer(
-        backgroundColor: Color(Colors.grey.value),
+        backgroundColor: Color(Colors.black87.value),
         width: 250,
         child: ListView(
           padding: EdgeInsets.zero,
@@ -84,7 +83,10 @@ class _PaginafilmesState extends State<Paginafilmes> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
+              leading: const Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
               title: Text(
                 'Início',
                 style: GoogleFonts.bebasNeue(
@@ -99,7 +101,10 @@ class _PaginafilmesState extends State<Paginafilmes> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.search_outlined),
+              leading: const Icon(
+                Icons.search_outlined,
+                color: Colors.white,
+              ),
               title: Text(
                 'Pesquisar',
                 style: GoogleFonts.bebasNeue(
@@ -110,11 +115,18 @@ class _PaginafilmesState extends State<Paginafilmes> {
                 ),
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  (MaterialPageRoute(
+                      builder: (context) => const PaginaPesquisa())),
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.list),
+              leading: const Icon(
+                Icons.list,
+                color: Colors.white,
+              ),
               title: Text(
                 'Lista',
                 style: GoogleFonts.bebasNeue(
@@ -133,8 +145,19 @@ class _PaginafilmesState extends State<Paginafilmes> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.exit_to_app),
-              title: const Text('Sair'),
+              leading: const Icon(
+                Icons.exit_to_app,
+                color: Colors.white,
+              ),
+              title: Text(
+                'Sair',
+                style: GoogleFonts.bebasNeue(
+                  textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
               onTap: () {
                 SystemNavigator.pop();
               },
@@ -320,116 +343,6 @@ class _PaginafilmesState extends State<Paginafilmes> {
                 ],
               ),
             ),
-    );
-  }
-
-  _filmeGrid() {
-    return GridView.builder(
-      controller: _scrollController,
-      padding: const EdgeInsets.all(8.0),
-      itemCount: _controller.resultadosTotais,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: 0.67),
-      itemBuilder: (context, index) {
-        if (index < _controller.listFilmesPopulares.length) {
-          final filme = _controller.listFilmesPopulares[index];
-          final bool isSelected = filme.id == _idFilmeSelecionado;
-          final posterUrl =
-              'https://image.tmdb.org/t/p/w342${_controller.listFilmesPopulares[index].posterPath}';
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                if (isSelected) {
-                  _abrirDetalhesFilme(_idFilmeSelecionado!, filme.title);
-                  _idFilmeSelecionado = null;
-                } else {
-                  _idFilmeSelecionado = filme.id;
-                  print("$_idFilmeSelecionado - ${filme.id}");
-                }
-              });
-            },
-            child: Hero(
-              tag: 'movie_${_controller.listFilmesPopulares[index].id}',
-              child: Container(
-                decoration: BoxDecoration(
-                  border: isSelected
-                      ? Border.all(
-                          color: const Color.fromARGB(136, 255, 255, 255),
-                          width: 1.0)
-                      : Border.all(color: Colors.white, width: 1.0),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        posterUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.error),
-                          );
-                        },
-                      ),
-                    ),
-                    if (isSelected)
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                      ),
-                    if (isSelected)
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8),
-                            ),
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.8),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                          child: Text(
-                            filme.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
     );
   }
 
